@@ -4,6 +4,13 @@
     {
         public int orderid;
 
-        public int status;       
+        public ProcessStatus status;       
+    }
+
+    public enum ProcessStatus
+    {
+        Started,
+        Failed,
+        Completed
     }
 }

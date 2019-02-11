@@ -21,17 +21,35 @@ namespace MulitThreading
         {
             OrderInfo orderDetail = new OrderInfo() { orderid = 5678 };
             OrderProcess obj = new OrderProcess();
-            obj.OrderProcessCompleted += new OrderProcess.ProcessCompleted(new MobileClientApp().GetStatus);
-            obj.OrderProcessCompleted += new OrderProcess.ProcessCompleted(new BackGroundProcessApp().GetStatus);
-            obj.OrderProcessCompleted += new OrderProcess.ProcessCompleted(new WebServiceAPP().GetStatus);
-            obj.StarProcess(orderDetail);            
+            MobileClientApp mobileClientApp = new MobileClientApp();
+            BackGroundProcessApp backGroundProcessApp = new BackGroundProcessApp();
+            WebServiceAPP webServiceAPP = new WebServiceAPP();
+            
+            obj.OrderProcessStarted += new OrderProcess.ProcessStarted(mobileClientApp.GetStatus);
+            obj.OrderProcessStarted += new OrderProcess.ProcessStarted(backGroundProcessApp.GetStatus);
+            obj.OrderProcessStarted += new OrderProcess.ProcessStarted(webServiceAPP.GetStatus);
+            obj.OrderProcessStarted += delegate (OrderInfo info)
+            {
+                Console.WriteLine(info.status);
+                Console.WriteLine("This is anonymous method sample");
+            };
 
-            //OrderInfo orderDetail1 = new OrderInfo() { orderid = 5567 };
-            //OrderProcess obj1 = new OrderProcess();            
-            //obj1.OrderProcessCompleted += new OrderProcess.ProcessCompleted(new MobileClientApp().GetStatus);
-            //obj1.StarProcess(orderDetail);
-            obj.OrderProcessCompleted = null;
+            //obj.OrderProcessStarted = null;
+
+            obj.OrderProcessCompleted += mobileClientApp.GetStatus;
+            obj.OrderProcessCompleted += backGroundProcessApp.GetStatus;
+            obj.OrderProcessCompleted += webServiceAPP.GetStatus;
+            obj.OrderProcessCompleted += delegate (object sender, OrderInfoArgs args)
+            {
+                Console.WriteLine(args.orderInfo.status);
+                Console.WriteLine("This is anonymous method sample");
+            };
+            
+            obj.StarProcess(orderDetail);
+            
         }
+
+        
 
         private static void DelegateAndEventCodeSample()
         {
