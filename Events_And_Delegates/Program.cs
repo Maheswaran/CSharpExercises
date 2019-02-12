@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using static Events_And_Delegates.VideoEncoder;
 
 namespace MulitThreading
@@ -13,6 +14,7 @@ namespace MulitThreading
         static void Main(string[] args)
         {
             //DelegateAndEventCodeSample();
+            //Console.WriteLine("Thread id:" + Thread.CurrentThread.ManagedThreadId);
             DelegateCodeSample();
             Console.Read();
         }
@@ -30,19 +32,18 @@ namespace MulitThreading
             obj.OrderProcessStarted += new OrderProcess.ProcessStarted(webServiceAPP.GetStatus);
             obj.OrderProcessStarted += delegate (OrderInfo info)
             {
-                Console.WriteLine(info.status);
-                Console.WriteLine("This is anonymous method sample");
+                Console.WriteLine("This is anonymous method sample. Order status: " + info.status);
             };
 
-            //obj.OrderProcessStarted = null;
+            Action<OrderInfo> actionDEl = (order) => { Console.WriteLine("Message from action methid" + order.status); };
+            obj.OrderProcessStarted += actionDEl.Invoke;
 
             obj.OrderProcessCompleted += mobileClientApp.GetStatus;
             obj.OrderProcessCompleted += backGroundProcessApp.GetStatus;
             obj.OrderProcessCompleted += webServiceAPP.GetStatus;
             obj.OrderProcessCompleted += delegate (object sender, OrderInfoArgs args)
             {
-                Console.WriteLine(args.orderInfo.status);
-                Console.WriteLine("This is anonymous method sample");
+                Console.WriteLine("This is anonymous method sample. Order status: " + args.orderInfo.status);
             };
             
             obj.StarProcess(orderDetail);

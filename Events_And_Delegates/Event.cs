@@ -20,7 +20,6 @@ namespace Events_And_Delegates
                 Console.WriteLine("No subscribers attached..");
         }
 
-
         public int CheckEncodingStatus()
         {
             return 1;

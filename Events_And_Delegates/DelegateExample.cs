@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Events_And_Delegates
 {
@@ -38,7 +39,7 @@ namespace Events_And_Delegates
         public ProcessStarted OrderProcessStarted;
 
         //public delegate void ProcessCompleted(OrderInfo info);
-        public event EventHandler<OrderInfoArgs> OrderProcessCompleted;
+        public event EventHandler<OrderInfoArgs> OrderProcessCompleted;        
     }
 
     public class OrderInfoArgs : EventArgs
@@ -50,14 +51,13 @@ namespace Events_And_Delegates
     {     
         public void GetStatus(OrderInfo info)
         {
-            Console.WriteLine(info.status);
-            Console.WriteLine("From mobile client app"); ;
+            int id = Thread.CurrentThread.ManagedThreadId;
+            Console.WriteLine("Thread id: " + id + ", Message: From mobile client app," + "Order status: " + info.status); 
         }
 
         public void GetStatus(object sender, OrderInfoArgs args)
         {
-            Console.WriteLine(args.orderInfo.status);
-            Console.WriteLine("From mobile client app"); ;
+            Console.WriteLine("Message: From mobile client app. Order status: " + args.orderInfo.status); 
         }
     }
 
@@ -65,28 +65,26 @@ namespace Events_And_Delegates
     {
         public void GetStatus(OrderInfo info)
         {
-            Console.WriteLine(info.status);
-            Console.WriteLine("From back ground process app"); ;
+            int id = Thread.CurrentThread.ManagedThreadId;            
+            Console.WriteLine("Thread id: " + id + ", Message: From back ground process app," + "Order status: " + info.status); 
         }
         public void GetStatus(object sender, OrderInfoArgs args)
         {
-            Console.WriteLine(args.orderInfo.status);
-            Console.WriteLine("From mobile client app"); ;
+            Console.WriteLine("Message: From back ground process app. Order status: " + args.orderInfo.status); 
         }
     }
 
     public class WebServiceAPP
     {
         public void GetStatus(object sender, OrderInfoArgs args)
-        {
-            Console.WriteLine(args.orderInfo.status);
-            Console.WriteLine("From mobile client app"); ;
+        {  
+            Console.WriteLine("Message: From web service app. Order status: " + args.orderInfo.status);
         }
 
         public void GetStatus(OrderInfo info)
         {
-            Console.WriteLine(info.status);
-            Console.WriteLine("From web service app"); ;
+            int id = Thread.CurrentThread.ManagedThreadId;
+            Console.WriteLine("Thread id: " + id + ", Message: From web service app," + "Order status: " + info.status);
         }
     }
 }
